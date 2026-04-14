@@ -66,12 +66,12 @@
         btn.disabled = true;
         try {
             await addDoc(collection(db, "requests"), {
-                showToast("Данные успешно опубликованы!");
                 name: document.getElementById('name').value,
                 email: document.getElementById('email').value,
                 likes: 0,
                 timestamp: serverTimestamp()
             });
+            showToast("Данные успешно опубликованы!");
             document.getElementById('email').value = "";
         } catch (e) { 
             alert("Ошибка безопасности: Данные отклонены сервером."); 
