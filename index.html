@@ -8,7 +8,8 @@
         body { font-family: sans-serif; background-color: #f0f2f5; display: flex; flex-direction: column; align-items: center; padding: 20px; }
         .card { background: white; border-radius: 12px; padding: 20px; width: 100%; max-width: 400px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
         h2 { margin-top: 0; font-size: 1.2rem; }
-        #myInfo { margin-bottom: 15px; }
+        #myInfo { margin-bottom: 15px; color: #333; }
+        
         .buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         button { border: none; border-radius: 8px; padding: 10px; color: white; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 5px; }
         
@@ -42,6 +43,7 @@
     <script type="module">
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
+        // Замени на URL и Key своего нового проекта, если они отличаются
         const URL = 'https://nuuxptfjgedosnlzlzvo.supabase.co';
         const KEY = 'sb_publishable_lPJB0WiAJY75hB0eD2ltnA_0KLJO41H';
         const supabase = createClient(URL, KEY);
@@ -55,7 +57,7 @@
                 .eq('id', MY_ID);
 
             if (error) {
-                alert("Ошибка! Проверьте RLS политики в Supabase.");
+                alert("Ошибка! Проверьте RLS политики или наличие колонки color в Supabase.");
                 console.error(error);
             } else {
                 fetchGroup();
