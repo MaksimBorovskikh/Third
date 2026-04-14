@@ -1,26 +1,24 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Монитор группы</title>
     <style>
-        body { font-family: sans-serif; background-color: #f0f4f8; display: flex; flex-direction: column; align-items: center; padding: 40px; }
-        .card { background: white; border-radius: 15px; padding: 25px; width: 450px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 30px; }
-        h2 { margin-top: 0; font-size: 1.4rem; font-weight: bold; }
-        #myInfo { margin-bottom: 20px; color: #333; }
+        body { font-family: sans-serif; background-color: #f0f2f5; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .card { background: white; border-radius: 12px; padding: 20px; width: 100%; max-width: 400px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        h2 { margin-top: 0; font-size: 1.2rem; }
+        #myInfo { margin-bottom: 15px; }
+        .buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        button { border: none; border-radius: 8px; padding: 10px; color: white; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 5px; }
         
-        .buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        button { border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; padding: 12px; color: white; cursor: pointer; font-weight: bold; font-size: 14px; }
-        
-        /* Стили кнопок со скриншота */
-        .btn-study { background-color: #2e7d32; }
-        .btn-coffee { background-color: #ffc107; color: black; }
-        .btn-game { background-color: #0097a7; }
-        .btn-home { background-color: #546e7a; }
+        .btn-study { background-color: #28a745; }
+        .btn-coffee { background-color: #ffc107; color: #000; }
+        .btn-game { background-color: #17a2b8; }
+        .btn-home { background-color: #6c757d; }
 
-        .user-item { display: flex; align-items: center; padding: 15px 0; border-bottom: 1px solid #f0f0f0; }
-        .status-dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 15px; background: #ffc107; }
+        .user-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .status-dot { width: 12px; height: 12px; border-radius: 50%; }
     </style>
 </head>
 <body>
@@ -29,10 +27,10 @@
         <h2>Мой профиль</h2>
         <div id="myInfo">Загрузка...</div>
         <div class="buttons">
-            <button class="btn-study" onclick="window.changeStatus('📚 Учусь')">📚 Учусь</button>
-            <button class="btn-coffee" onclick="window.changeStatus('☕ Кофе')">☕ Кофе</button>
-            <button class="btn-game" onclick="window.changeStatus('🎮 В игре')">🎮 В игре</button>
-            <button class="btn-home" onclick="window.changeStatus('🏠 Дома')">🏠 Дома</button>
+            <button class="btn-study" onclick="changeStatus('📚 Учусь', '#28a745')">📚 Учусь</button>
+            <button class="btn-coffee" onclick="changeStatus('☕ Кофе', '#ffc107')">☕ Кофе</button>
+            <button class="btn-game" onclick="changeStatus('🎮 В игре', '#17a2b8')">🎮 В игре</button>
+            <button class="btn-home" onclick="changeStatus('🏠 Дома', '#6c757d')">🏠 Дома</button>
         </div>
     </div>
 
@@ -45,15 +43,15 @@
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
         const URL = 'https://nuuxptfjgedosnlzlzvo.supabase.co';
-        const KEY = 'sb_publishable_lPJB0WiAJY75hB0eD2ltnA_0KLJO41H';
+        const KEY = 'ВСТАВЬ_СВОЙ_ANON_KEY_ЗДЕСЬ';
         const supabase = createClient(URL, KEY);
 
         const MY_ID = '4bc5694e-89f8-47d9-9b60-2d3bd2439122';
 
-        window.changeStatus = async (text) => {
+        window.changeStatus = async (text, color) => {
             const { error } = await supabase
                 .from('profiles')
-                .update({ status: text })
+                .update({ status: text, color: color })
                 .eq('id', MY_ID);
 
             if (error) {
@@ -75,7 +73,7 @@
             const list = document.getElementById('grouplist');
             list.innerHTML = data.map(user => `
                 <div class="user-item">
-                    <div class="status-dot"></div>
+                    <div class="status-dot" style="background: ${user.color || '#ccc'}"></div>
                     <div style="flex-grow: 1;">
                         <strong>${user.username}</strong><br>
                         <small style="color: #666;">${user.status || 'Статус не задан'}</small>
@@ -84,7 +82,9 @@
             `).join('');
 
             const me = data.find(u => u.id === MY_ID);
-            if (me) document.getElementById('myInfo').innerText = `Вы зашли как: ${me.username}`;
+            if (me) {
+                document.getElementById('myInfo').innerText = `Вы зашли как: ${me.username}`;
+            }
         }
 
         fetchGroup();
