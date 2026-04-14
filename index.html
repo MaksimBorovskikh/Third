@@ -32,7 +32,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
     import { 
         getFirestore, collection, addDoc, query, orderBy, onSnapshot, 
-        serverTimestamp, updateDoc, doc, increment, deleteDoc
+        serverTimestamp, updateDoc, doc, increment, deleteDoc, getDocs, writeBatch
     } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
     // КОНФИГУРАЦИЯ
@@ -107,20 +107,24 @@
         alert("У вас нет прав на удаление (проверьте Rules в Firebase!)");
         }
     };
-    import { getDocs, writeBatch } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-    document.getElementById('clearBtn').onclick = async () => {
+   document.getElementById('clearBtn').onclick = async () => {
         if (!confirm("Вы уверены, что хотите удалить ВСЕ данные?")) return;
-    
-        const querySnapshot = await getDocs(collection(db, "requests"));
-        const batch = writeBatch(db); // Используем batch для быстрого удаления
-    
-        querySnapshot.forEach((doc) => {
-        batch.delete(doc.ref);
-        });
-    
-        await batch.commit();
-        alert("Облако очищено!");
+        
+        try {
+            const querySnapshot = await getDocs(collection(db, "requests"));
+            const batch = writeBatch(db); 
+            
+            querySnapshot.forEach((doc) => {
+                batch.delete(doc.ref);
+            });
+            
+            await batch.commit(); 
+            alert("Все данные удалены!");
+        } catch (e) {
+            console.error(e);
+            alert("Ошибка доступа. Проверьте правила Firebase Rules.");
+        }
     };
 </script>
 </body>
